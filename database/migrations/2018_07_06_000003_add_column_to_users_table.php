@@ -31,8 +31,7 @@ class AddColumnToUsersTable extends Migration
                 ->after('id');
 
             $table->unsignedBigInteger('phone_number')
-                ->after('country_code')
-                ->unique();
+                ->after('country_code');
         });
     }
 
