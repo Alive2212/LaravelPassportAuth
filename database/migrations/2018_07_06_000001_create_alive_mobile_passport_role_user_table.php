@@ -13,9 +13,7 @@ class CreateAliveMobilePassportRoleUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('alive_mobile_passport_roles_user', function (Blueprint $table) {
-            $table->increments('id');
-
+        Schema::create('alive_mobile_passport_role_user', function (Blueprint $table) {
             $table->unsignedInteger('role_id')
                 ->index();
             $table->foreign('role_id')
@@ -30,8 +28,6 @@ class CreateAliveMobilePassportRoleUserTable extends Migration
                 ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-
-            $table->timestamps();
         });
     }
 

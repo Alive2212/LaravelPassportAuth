@@ -37,7 +37,7 @@ Route::prefix('api')->group(function () {
                 });
                 Route::prefix('auth')->group(function () {
                     Route::post('', 'Alive2212\LaravelMobilePassport\Http\Controllers\MobilePassportAuthController@store');
-                    Route::post('confirm', 'Alive2212\LaravelMobilePassport\Http\Controllers\MobilePassportAuthController@otpConfirm');
+                    Route::post('confirm', 'Alive2212\LaravelMobilePassport\Http\Controllers\MobilePassportAuthController@confirmOtp');
                 });
             });
         });

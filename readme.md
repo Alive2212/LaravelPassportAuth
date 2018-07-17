@@ -31,12 +31,41 @@ add following code into AuthServiceProvider in 'boot' method
             AliveMobilePassportDevice $device,
             $token
         ) {
-            // dispach send sms job here to send sms
+            // dispach send sms job here to send notification
         };
+        
+        
+        LaravelMobilePassportSingleton::$otpConfirmCallBack = function (
+            Request $reqeust,
+            User $user
+        ) {
+            // put somthing here like update user name with request fileds
+        };
+
     }
 ```
 
 add 'phone_number' & 'country_code' into model $fillable variable.
+
+```
+php artisan vendor:publish --tag laravel_mobile_passport
+```
+
+add to user model
+```php
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(
+            AliveMobilePassportRole::class,
+            'alive_mobile_passport_role_user',
+            'user_id',
+            'role_id'
+        );
+    }
+```
 
 
 

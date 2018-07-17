@@ -37,6 +37,19 @@ class MobilePassportAuthController extends BaseController
 //    }
 //
 
+    protected $defaultUsers = [
+        [
+            'country_code' => '+98',
+            'phone_number' => '9127390191',
+            'token' => 3369,
+        ]
+    ];
+
+    /**
+     * @var string
+     */
+    protected $defaultPassword = 'MniBN&IhmPowerFm!Dokhan$2018';
+
     /**
      * @var int
      */
@@ -212,30 +225,63 @@ class MobilePassportAuthController extends BaseController
      * this method can overwritten by developer
      *
      * @param Request $request
+     * @param bool $isOtp
      * @return User
      */
-    public function firstOrCreateUser(Request $request)
+    public function firstOrCreateUser(Request $request, bool $isOtp = false)
     {
         // Attributes can overwritten by developer
         if (!isset($attributes)) {
-            $attributes = [
-                'email' => $request['email'],
-            ];
+            if ($isOtp) {
+                $attributes = [
+                    'country_code' => $request['country_code'],
+                    'phone_number' => $request['phone_number'],
+                ];
+            } else {
+                $attributes = [
+                    'email' => $request['email'],
+                ];
+            }
         }
 
         // Values can overwritten by developer
         if (!isset($values)) {
-            $values = [
-                // TODO read from app setting
-                'phone_number' => $request['phone_number'],
-                'country_code' => $request['country_code'],
-                'name' => isset($request['name']) ? $request['name'] : '',
-                'password' => Hash::make($request['password']),
-            ];
+            if ($isOtp) {
+                $values = [
+                    // TODO read from app setting
+                    'name' =>
+                        isset($request['name']) ?
+                            $request['name'] :
+                            '',
+                    'password' => Hash::make(
+                        isset($request['password']) ?
+                            $request['password'] :
+                            $this->defaultPassword
+                    ),
+                ];
+            } else {
+                $values = [
+                    // TODO read from app setting
+                    'phone_number' =>
+                        isset($request['phone_number']) ?
+                            $request['phone_number'] :
+                            0,
+                    'country_code' =>
+                        isset($request['country_code']) ?
+                            $request['country_code'] :
+                            '',
+                    'name' =>
+                        isset($request['name']) ?
+                            $request['name'] :
+                            '',
+                    'password' =>
+                        Hash::make($request['password']),
+                ];
+            }
         }
 
         $user = new User();
-        $user = $user->firstOrCreate($attributes, $values);
+        $user = $user->firstOrCreate($attributes, $values)->with('roles')->first();
         return $user;
     }
 
@@ -262,14 +308,7 @@ class MobilePassportAuthController extends BaseController
             }
         }
 
-        $this->user = $this->firstOrCreateUser($request);
-
-        if (is_null($this->user)) {
-            $response->setMessage($this->getTrans(__FUNCTION__, 'email_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
-            return SmartResponse::response($response);
-        }
+        $this->user = $this->firstOrCreateUser($request, true);
 
         $this->device = $this->firstOrCreateDevice($request);
 
@@ -284,10 +323,10 @@ class MobilePassportAuthController extends BaseController
             $this->otpToken
         );
 
-        if (env('APP_DEBUG')){
+        if (env('APP_DEBUG')) {
             $response->setData(collect([
-                'user'=>$this->user->toArray(),
-                'device'=>$this->device->toArray(),
+                'user' => $this->user->toArray(),
+                'device' => $this->device->toArray(),
                 'otp_token' => $this->otpToken,
             ]));
         }
@@ -299,7 +338,7 @@ class MobilePassportAuthController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function otpConfirm(Request $request)
+    public function confirmOtp(Request $request)
     {
 //        return 'I have closest relationship with all US and UK celebrities';
         $response = new ResponseModel();
@@ -318,16 +357,23 @@ class MobilePassportAuthController extends BaseController
             }
         }
 
-        if($this->tokenIsValid($request)){
+        if ($this->tokenIsValid($request)) {
             // Successful
             $this->user = (new User())->where([
                 ['phone_number', '=', $request['phone_number']],
                 ['country_code', '=', $request['country_code']],
             ])->first();
+
+            call_user_func(
+                LaravelMobilePassportSingleton::$otpConfirmCallBack,
+                $request,
+                $this->user
+            );
+
             return $this->IssueToken($request);
-        }else{
+        } else {
             // not Successful
-            $response->setMessage($this->getTrans(__FUNCTION__, 'password_failed'));
+            $response->setMessage($this->getTrans(__FUNCTION__, 'token_failed'));
             $response->setStatus(false);
             $response->setError(401);
             return SmartResponse::response($response);
@@ -336,26 +382,40 @@ class MobilePassportAuthController extends BaseController
 
     public function tokenIsValid(Request $request)
     {
-        $cachedToken = Cache::get($this->otpKeyMaker($request));
+        $cachedToken = Cache::get($this->otpKeyMaker($request,'token'));
         return $cachedToken == $request['token'];
     }
 
     /**
+     * @param Request $request
      * @return int|mixed
      */
     public function generateOtpToken(Request $request)
     {
-        $key = $this->otpKeyMaker($request);
+        $tokenKey = $this->otpKeyMaker($request,'token');
+        $scopeKey = $this->otpKeyMaker($request,'scope');
 
-        if (is_null(Cache::get($key))) {
+        // check for default users
+        foreach ($this->defaultUsers as $defaultUser) {
+            if (
+                $defaultUser['country_code'] == $request['country_code'] &&
+                $defaultUser['phone_number'] == $request['phone_number']
+            ) {
+                Cache::put($scopeKey, $request['scope'], $this->otpTokenExpireTime);
+                Cache::put($tokenKey, $defaultUser['token'], $this->otpTokenExpireTime);
+                return $defaultUser['token'];
+            }
+        }
+
+        if (is_null(Cache::get($tokenKey))) {
             // not any cached token
 
             $token = rand(1000, 9999);
 
-            Cache::put($key, $token, $this->otpTokenExpireTime);
+            Cache::put($tokenKey, $token, $this->otpTokenExpireTime);
         } else {
 
-            $token = Cache::get($key);
+            $token = Cache::get($tokenKey);
         }
 
         return $token;
@@ -389,6 +449,15 @@ class MobilePassportAuthController extends BaseController
             return SmartResponse::response($response);
         }
 
+        //check for user roles
+        if (!$this->userHavePermission($request)) {
+            $response->setMessage($this->getTrans(__FUNCTION__, 'permission_failed'));
+            $response->setStatus(false);
+            $response->setError(401);
+            return SmartResponse::response($response);
+        }
+
+
         $this->firstOrCreateDevice($request);
 
         $hash = app('hash');
@@ -410,13 +479,20 @@ class MobilePassportAuthController extends BaseController
      */
     public function IssueToken(Request $request)
     {
+        // response object
         $response = new ResponseModel();
 
-        $token = $this->user->createToken($request['scope'], [$request['scope']]);
+        // scope key for cache scopes
+        $scopeKey = $this->otpKeyMaker($request, 'scope');
+
+        $scope = is_null($request['scope']) ? Cache::get($scopeKey) : $request['scope'];
+
+
+        $token = $this->user->createToken($scope, [$scope]);
 
         $response->setData(collect([
             'user_id' => $token->toArray()['token']['user_id'],
-            'scope' => $request['scope'],
+            'scope' => $scope,
             'accessToken' => $token->toArray()['accessToken'],
             'expires_at' => $token->toArray()['token']['expires_at'],
         ]));
@@ -444,13 +520,31 @@ class MobilePassportAuthController extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @param string $prefix
      * @return string
      */
-    public function otpKeyMaker(Request $request)
+    public function otpKeyMaker(Request $request,string $prefix = '')
     {
         $key = 'alive_mobile_passport_' .
+            ($prefix=='' ? '': $prefix .'_').
             $request['country_code'] .
             $request['phone_number'];
         return $key;
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public function userHavePermission(Request $request): bool
+    {
+        $userHaveRole = false;
+        foreach ($this->user->toArray()['roles'] as $roleParams) {
+            if ($roleParams['title'] == $request['scope']) {
+                $userHaveRole = true;
+            }
+        }
+        return $userHaveRole;
     }
 }

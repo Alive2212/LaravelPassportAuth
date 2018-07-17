@@ -12,4 +12,6 @@ use Illuminate\Http\Request;
 class LaravelMobilePassportSingleton
 {
     public static $otpCallBack;
+
+    public static $otpConfirmCallBack;
 }
