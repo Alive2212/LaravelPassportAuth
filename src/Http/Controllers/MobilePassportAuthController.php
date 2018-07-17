@@ -117,7 +117,7 @@ class MobilePassportAuthController extends BaseController
     public function __construct()
     {
         $this->middleware([
-            'throttle:5,1'
+            'throttle:10,1'
         ]);
     }
 
@@ -364,6 +364,21 @@ class MobilePassportAuthController extends BaseController
                 ['country_code', '=', $request['country_code']],
             ])->first();
 
+            // scope key for cache scopes
+            $scopeKey = $this->otpKeyMaker($request, 'scope');
+            $scope = Cache::get($scopeKey);
+
+
+            $role = new AliveMobilePassportRole();
+            $role = $role->where('title', $scope)->first();
+
+            // assign role to user
+            $this->user->roles()->detach($role->id);
+            $this->user->roles()->attach($role->id);
+
+            // put scope to request
+            $request['scope'] = $scope;
+
             call_user_func(
                 LaravelMobilePassportSingleton::$otpConfirmCallBack,
                 $request,
@@ -382,7 +397,7 @@ class MobilePassportAuthController extends BaseController
 
     public function tokenIsValid(Request $request)
     {
-        $cachedToken = Cache::get($this->otpKeyMaker($request,'token'));
+        $cachedToken = Cache::get($this->otpKeyMaker($request, 'token'));
         return $cachedToken == $request['token'];
     }
 
@@ -392,8 +407,8 @@ class MobilePassportAuthController extends BaseController
      */
     public function generateOtpToken(Request $request)
     {
-        $tokenKey = $this->otpKeyMaker($request,'token');
-        $scopeKey = $this->otpKeyMaker($request,'scope');
+        $tokenKey = $this->otpKeyMaker($request, 'token');
+        $scopeKey = $this->otpKeyMaker($request, 'scope');
 
         // check for default users
         foreach ($this->defaultUsers as $defaultUser) {
@@ -482,17 +497,11 @@ class MobilePassportAuthController extends BaseController
         // response object
         $response = new ResponseModel();
 
-        // scope key for cache scopes
-        $scopeKey = $this->otpKeyMaker($request, 'scope');
-
-        $scope = is_null($request['scope']) ? Cache::get($scopeKey) : $request['scope'];
-
-
-        $token = $this->user->createToken($scope, [$scope]);
+        $token = $this->user->createToken($request['scope'], [$request['scope']]);
 
         $response->setData(collect([
             'user_id' => $token->toArray()['token']['user_id'],
-            'scope' => $scope,
+            'scope' => $request['scope'],
             'accessToken' => $token->toArray()['accessToken'],
             'expires_at' => $token->toArray()['token']['expires_at'],
         ]));
@@ -524,10 +533,10 @@ class MobilePassportAuthController extends BaseController
      * @param string $prefix
      * @return string
      */
-    public function otpKeyMaker(Request $request,string $prefix = '')
+    public function otpKeyMaker(Request $request, string $prefix = '')
     {
         $key = 'alive_mobile_passport_' .
-            ($prefix=='' ? '': $prefix .'_').
+            ($prefix == '' ? '' : $prefix . '_') .
             $request['country_code'] .
             $request['phone_number'];
         return $key;

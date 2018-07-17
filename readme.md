@@ -93,8 +93,13 @@ add to user model
     }
 ```
 
-## Usage
+```php
+$ art passport:install
+```
 
+## Usage
+1- create roles what you want in to alive_mobile_passport_roles
+*tip: title of roles must unique
 
 
 ## Change log
