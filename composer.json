@@ -1,12 +1,12 @@
 {
-    "name": "alive2212/laravelmobilepassport",
+    "name": "alive2212/laravel-mobile-passport",
     "description": ":description",
     "license": "license",
     "authors": [
         {
-            "name": "author name",
-            "email": "author email",
-            "homepage": "author homepage"
+            "name": "Babak Nodoust",
+            "email": "alive2212@yahoo.com",
+            "homepage": "babakn.com"
         }
     ],
     "homepage": "https://github.com/alive2212/laravelmobilepassport",
