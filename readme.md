@@ -45,8 +45,18 @@ add following code into AuthServiceProvider in 'boot' method
     }
 ```
 
-add 'phone_number' & 'country_code' into model $fillable variable.
+add 'phone_number' & 'country_code' into model $fillable variable:
+```php
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone_number',
+        'country_code',
+    ];
+```
 
+publish vendor files with following command:
 ```
 php artisan vendor:publish --tag laravel_mobile_passport
 ```
