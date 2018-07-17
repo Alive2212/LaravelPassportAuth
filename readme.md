@@ -28,37 +28,38 @@ if use Laravel < 5.4 add to service provider 'config/app.php'
 
 migrate all database
 ```
-php artisan migrate
+$ php artisan migrate
 ```
 add following code into AuthServiceProvider in 'boot' method
 ```php
-    public function boot()
-    {
-        $this->registerPolicies();
+public function boot()
+{
+    $this->registerPolicies();
 
-        Passport::routes();
+    Passport::routes();
 
-        LaravelMobilePassport::initPassportTokenCan();
+    LaravelMobilePassport::initPassportTokenCan();
 
-        LaravelMobilePassportSingleton::$otpCallBack = function (
-            Request $reqeust,
-            User $user,
-            AliveMobilePassportDevice $device,
-            $token
-        ) {
-            // dispach send sms job here to send notification
-        };
-        
-        
-        LaravelMobilePassportSingleton::$otpConfirmCallBack = function (
-            Request $reqeust,
-            User $user
-        ) {
-            // put somthing here like update user name with request fileds
-        };
-
-    }
+    LaravelMobilePassportSingleton::$otpCallBack = function (
+        Request $reqeust,
+        User $user,
+        AliveMobilePassportDevice $device,
+        $token
+    ) {
+        // dispach send sms job here to send notification
+    };
+    
+    
+    LaravelMobilePassportSingleton::$otpConfirmCallBack = function (
+        Request $reqeust,
+        User $user
+    ) {
+        // put somthing here like update user name with request fileds
+    };
+    
+}
 ```
+*tip: if ENV_DEBUG in .env file set to false don't return any data in register by token 
 
 add 'phone_number' & 'country_code' into model $fillable variable:
 ```php
@@ -73,7 +74,7 @@ add 'phone_number' & 'country_code' into model $fillable variable:
 
 publish vendor files with following command:
 ```
-php artisan vendor:publish --tag laravel_mobile_passport
+php artisan vendor:publish --tag laravel_mobile_passport.lang
 ```
 
 add to user model
@@ -91,8 +92,6 @@ add to user model
         );
     }
 ```
-
-
 
 ## Usage
 
