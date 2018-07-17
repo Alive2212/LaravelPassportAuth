@@ -14,7 +14,22 @@ Via Composer
 ``` bash
 $ composer require alive2212/laravelmobilepassport
 ```
+if use Laravel < 5.4 add to service provider 'config/app.php'
+```php
+    'providers' => [
+        ...
+        
+        /*
+         * Authentication service
+         */
+        Alive2212\LaravelMobilePassport\LaravelMobilePassportServiceProvider::class,
+    ],
+```
 
+migrate all database
+```
+php artisan migrate
+```
 add following code into AuthServiceProvider in 'boot' method
 ```php
     public function boot()
