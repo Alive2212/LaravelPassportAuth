@@ -1,0 +1,42 @@
+{
+    "name": "alive2212/laravelmobilepassport",
+    "description": ":description",
+    "license": "license",
+    "authors": [
+        {
+            "name": "author name",
+            "email": "author email",
+            "homepage": "author homepage"
+        }
+    ],
+    "homepage": "https://github.com/alive2212/laravelmobilepassport",
+    "keywords": ["Laravel", "LaravelMobilePassport"],
+    "require": {
+        "illuminate/support": "~5",
+        "alive2212/laravel-smart-restful": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.0",
+        "orchestra/testbench": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Alive2212\\LaravelMobilePassport\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Alive2212\\LaravelMobilePassport\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alive2212\\LaravelMobilePassport\\LaravelMobilePassportServiceProvider"
+            ],
+            "aliases": {
+                "LaravelMobilePassport": "Alive2212\\LaravelMobilePassport\\Facades\\LaravelMobilePassport"
+            }
+        }
+    }
+}
