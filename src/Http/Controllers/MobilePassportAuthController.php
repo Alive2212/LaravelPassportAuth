@@ -81,7 +81,9 @@ class MobilePassportAuthController extends BaseController
      * @var array
      */
     protected $registerByPasswordValidateArray = [
-        'email' => 'required',
+        'country_code' => 'required',
+        'phone_number' => 'required',
+        'email' => 'required|email',
         'password' => 'required',
         'imei' => 'required',
         'app_name' => 'required',
@@ -232,56 +234,35 @@ class MobilePassportAuthController extends BaseController
     {
         // Attributes can overwritten by developer
         if (!isset($attributes)) {
-            if ($isOtp) {
-                $attributes = [
-                    'country_code' => $request['country_code'],
-                    'phone_number' => $request['phone_number'],
-                ];
-            } else {
-                $attributes = [
-                    'email' => $request['email'],
-                ];
-            }
+            $attributes = [
+                'country_code' => $request['country_code'],
+                'phone_number' => $request['phone_number'],
+            ];
         }
 
         // Values can overwritten by developer
         if (!isset($values)) {
-            if ($isOtp) {
-                $values = [
-                    // TODO read from app setting
-                    'name' =>
-                        isset($request['name']) ?
-                            $request['name'] :
-                            '',
-                    'password' => Hash::make(
-                        isset($request['password']) ?
-                            $request['password'] :
-                            $this->defaultPassword
-                    ),
-                ];
-            } else {
-                $values = [
-                    // TODO read from app setting
-                    'phone_number' =>
-                        isset($request['phone_number']) ?
-                            $request['phone_number'] :
-                            0,
-                    'country_code' =>
-                        isset($request['country_code']) ?
-                            $request['country_code'] :
-                            '',
-                    'name' =>
-                        isset($request['name']) ?
-                            $request['name'] :
-                            '',
-                    'password' =>
-                        Hash::make($request['password']),
-                ];
-            }
+            $values = [
+                // TODO read from app setting
+                'email' => isset($request['email']) ?
+                    $request['email'] :
+                    '',
+
+                'name' =>
+                    isset($request['name']) ?
+                        $request['name'] :
+                        '',
+
+                'password' => Hash::make(
+                    isset($request['password']) ?
+                        $request['password'] :
+                        $this->defaultPassword
+                ),
+            ];
         }
 
         $user = new User();
-        $user = $user->firstOrCreate($attributes, $values)->with('roles')->first();
+        $user = $user->firstOrCreate($attributes, $values)->load('roles');
         return $user;
     }
 

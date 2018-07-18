@@ -26,12 +26,24 @@ class AddColumnToUsersTable extends Migration
             });
         }
 
+        if (Schema::hasColumn('users', 'email')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('email');
+            });
+        }
+
         Schema::table('users', function (Blueprint $table) {
+            //country code
             $table->text('country_code')
                 ->after('id');
 
+            // phone_number
             $table->unsignedBigInteger('phone_number')
                 ->after('country_code');
+
+            //email
+            $table->text('email')
+                ->after('phone_number');
         });
     }
 

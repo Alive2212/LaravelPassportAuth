@@ -93,6 +93,7 @@ add to user model
     }
 ```
 
+Finally run following command to install passport dependency
 ```php
 $ art passport:install
 ```
