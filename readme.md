@@ -102,6 +102,10 @@ $ art passport:install
 1- create roles what you want in to alive_mobile_passport_roles
 *tip: title of roles must unique
 
+You can use following to get current user scopes
+```php
+$request['access_token'])
+```
 
 ## Change log
 
