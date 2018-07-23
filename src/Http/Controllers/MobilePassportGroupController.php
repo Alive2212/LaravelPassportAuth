@@ -2,22 +2,22 @@
 
 namespace Alive2212\LaravelMobilePassport\Http\Controllers;
 
-use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
+use Alive2212\LaravelMobilePassport\AliveMobilePassportGroup;
 use Alive2212\LaravelSmartRestful\BaseController;
 
-class MobilePassportRoleController extends BaseController
+class MobilePassportGroupController extends BaseController
 {
     /**
      * @var array
      */
     protected $pivotFields = [
         'authors',
-        'groups',
+        'roles',
     ];
 
     public function initController()
     {
-        $this->model = new AliveMobilePassportRole();
+        $this->model = new AliveMobilePassportGroup();
         $this->middleware([
         ]);
     }

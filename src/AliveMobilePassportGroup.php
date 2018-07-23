@@ -5,7 +5,7 @@ namespace Alive2212\LaravelMobilePassport;
 use Alive2212\LaravelSmartRestful\BaseModel;
 use App\User;
 
-class AliveMobilePassportRole extends BaseModel
+class AliveMobilePassportGroup extends BaseModel
 {
     /**
      * The attributes that are mass assignable.
@@ -17,7 +17,6 @@ class AliveMobilePassportRole extends BaseModel
         'title',
         'subtitle',
         'description',
-        'level',
         'revoked',
     ];
 
@@ -41,12 +40,12 @@ class AliveMobilePassportRole extends BaseModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function groups()
+    public function roles()
     {
         return $this->belongsToMany(
-            AliveMobilePassportGroup::class,
+            AliveMobilePassportRole::class,
             'alive_mobile_passport_group_role',
-            'role_id',
-            'group_id');
+            'group_id',
+            'roles_id');
     }
 }
