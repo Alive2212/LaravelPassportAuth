@@ -65,5 +65,12 @@ class AddColumnToUsersTable extends Migration
                 $table->dropColumn('country_code');
             });
         }
+
+        if (Schema::hasColumn('users', 'email')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('email');
+            });
+        }
+
     }
 }

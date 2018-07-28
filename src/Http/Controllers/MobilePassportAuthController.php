@@ -58,14 +58,14 @@ class MobilePassportAuthController extends BaseController
     protected $registerByPasswordValidateArray = [
         'country_code' => 'required',
         'phone_number' => 'required',
-        'email' => 'required|email',
+//        'email' => 'required|email',
         'password' => 'required',
-        'imei' => 'required',
-        'app_name' => 'required',
-        'app_version' => 'required',
-        'platform' => 'required',
-        'os' => 'required',
-        'push_token' => 'required',
+//        'imei' => 'required',
+//        'app_name' => 'required',
+//        'app_version' => 'required',
+//        'platform' => 'required',
+//        'os' => 'required',
+//        'push_token' => 'required',
     ];
 
     /**
@@ -160,18 +160,6 @@ class MobilePassportAuthController extends BaseController
             return $this->registerByPassword($request);
         }
 
-        //        $guzzle = new Client();
-//
-//        $response = $guzzle->post('http://localhost:8130/oauth/token', [
-//            'form_params' => [
-//                'grant_type' => $request['grant_type'],
-//                'client_id' => $request['client_id'],
-//                'client_secret' => $request['client_secret'],
-//                'scope' => $request['scope'],
-//            ],
-//        ]);
-//
-//        return json_decode((string) $response->getBody(), true)['access_token'];
     }
 
     /**
