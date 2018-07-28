@@ -15,35 +15,10 @@ use Illuminate\Support\Facades\Hash;
 
 class MobilePassportAuthController extends BaseController
 {
-//    public function index()
-//    {
-//
-//        $user = User::find(1);
-//        $token = $user->createToken('',['customer']);
-//        return ($token->toArray());
-//
-//        return auth()->id();
-//
-//
-//        dd(auth()->);
-//        return 'I have closet relationship with all US & British celebrities';
-//        $client = new Client();
-//        try {
-//            $response = $client->get('http://localhost:8130/oauth/authorize');
-//        } catch (RequestException $exception) {
-//            return $exception->getMessage();
-//        }
-//        return $response->getBody();
-//    }
-//
-
-    protected $defaultUsers = [
-        [
-            'country_code' => '+98',
-            'phone_number' => '9127390191',
-            'token' => 3369,
-        ]
-    ];
+    /**
+     * @var \Illuminate\Config\Repository|mixed
+     */
+    protected $defaultUsers;
 
     /**
      * @var string
@@ -116,11 +91,18 @@ class MobilePassportAuthController extends BaseController
         'push_token' => 'required',
     ];
 
+    /**
+     * MobilePassportAuthController constructor.
+     */
     public function __construct()
     {
+        // middleware
         $this->middleware([
             'throttle:10,1'
         ]);
+
+        //config default users
+        $this->defaultUsers = config('laravel_mobile_passport.default_users');
     }
 
 
