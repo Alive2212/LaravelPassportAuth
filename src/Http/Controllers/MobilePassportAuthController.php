@@ -324,8 +324,10 @@ class MobilePassportAuthController extends BaseController
             $role = $role->where('title', $scope)->first();
 
             // assign role to user
-            $this->user->roles()->detach($role->id);
-            $this->user->roles()->attach($role->id);
+            if (!is_null($role)) {
+                $this->user->roles()->detach($role->id);
+                $this->user->roles()->attach($role->id);
+            }
 
             // put scope to request
             $request['scope'] = $scope;

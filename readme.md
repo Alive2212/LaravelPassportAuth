@@ -75,6 +75,7 @@ add 'phone_number' & 'country_code' into model $fillable variable:
 publish vendor files with following command:
 ```
 php artisan vendor:publish --tag laravel_mobile_passport.lang
+php artisan vendor:publish --tag laravel_mobile_passport.config
 ```
 
 add to user model

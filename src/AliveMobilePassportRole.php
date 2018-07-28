@@ -18,6 +18,7 @@ class AliveMobilePassportRole extends BaseModel
         'subtitle',
         'description',
         'level',
+        'is_otp',
         'revoked',
     ];
 
