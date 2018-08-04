@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'Alive2212\LaravelMobilePassport\Http\Controllers\MobilePassportAuthController' => [
+    'Alive2212\LaravelMobilePassport\Http\Controllers\AliveParsianPaymentController' => [
         'store' => [
             'validation_failed' => 'Validation Field',
             'scope_exist_failed' => 'Can\'t find this scope',

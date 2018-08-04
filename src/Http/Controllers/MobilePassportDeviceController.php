@@ -11,7 +11,6 @@ class MobilePassportDeviceController extends BaseController
     {
         $this->model = new AliveMobilePassportDevice();
         $this->middleware([
-            'auth:api',
         ]);
     }
 }

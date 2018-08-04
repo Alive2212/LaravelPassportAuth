@@ -96,15 +96,9 @@ class MobilePassportAuthController extends BaseController
      */
     public function __construct()
     {
-        // middleware
-        $this->middleware([
-            'throttle:10,1'
-        ]);
-
         //config default users
         $this->defaultUsers = config('laravel_mobile_passport.default_users');
     }
-
 
     /**
      * @param Request $request
