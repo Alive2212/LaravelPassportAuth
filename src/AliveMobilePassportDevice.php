@@ -25,15 +25,6 @@ class AliveMobilePassportDevice extends BaseModel
     ];
 
     /**
-     * @return null
-     */
-    public function getQueueableRelations()
-    {
-        return null;
-        // TODO: Implement getQueueableRelations() method.
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function authors()

@@ -26,6 +26,18 @@ if use Laravel < 5.4 add to service provider 'config/app.php'
     ],
 ```
 
+if use Lumen add following service provider at then end of 'bootstrap/app.php' 
+```php
+$app->register(Alive2212\LaravelMobilePassport\LaravelMobilePassportServiceProvider::class);
+
+$app->router->group([
+    'namespace' => 'Alive2212\LaravelMobilePassport\Http\Controllers',
+], function ($router) {
+    require Alive2212\LaravelMobilePassport\LaravelMobilePassport::getDir() .
+        '/lumen_routes.php';
+});
+```
+
 migrate all database
 ```
 $ php artisan migrate

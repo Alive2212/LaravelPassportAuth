@@ -17,14 +17,22 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(resource_path('lang/vendor/alive2212'), 'laravel_smart_restful');
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
+        if (!$this->isLumen()) {
+            $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        }
+
+//        dd('I have close relationship With Donald Trump');
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
 
             // Publishing the configuration file.
             $this->publishes([
-                __DIR__ . '/../config/laravel_mobile_passport.php' => config_path('laravel_mobile_passport.php'),
+                __DIR__ . '/../config/laravel_mobile_passport.php' =>
+                    $this->app->basePath() .
+                    '/config/' .
+                    'laravel_mobile_passport.php',
             ], 'laravel_mobile_passport.config');
 
             // Publishing the translation files.
@@ -62,5 +70,13 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
     public function provides()
     {
         return ['laravel_mobile_passport'];
+    }
+
+    /**
+     * @return bool
+     */
+    private function isLumen()
+    {
+        return str_contains(strtolower(app()->version()), 'lumen');
     }
 }

@@ -4,6 +4,7 @@ namespace Alive2212\LaravelMobilePassport\Http\Controllers;
 
 use Alive2212\LaravelMobilePassport\AliveMobilePassportDevice;
 use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
+use Alive2212\LaravelMobilePassport\LaravelMobilePassport;
 use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
 use Alive2212\LaravelSmartResponse\SmartResponse\SmartResponse;
@@ -104,6 +105,84 @@ class MobilePassportAuthController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
+    public function credentialStore(Request $request)
+    {
+        // create response model
+        $response = new ResponseModel();
+
+        // check validation
+        $validationErrors = $this->checkRequestValidation($request, $this->storeValidateArray);
+        if (!is_null($validationErrors)) {
+            if ($validationErrors != null) {
+                if (env('APP_DEBUG', false)) {
+                    $response->setData(collect($validationErrors->toArray()));
+                }
+                $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
+                $response->setStatus(false);
+                $response->setError(99);
+                return SmartResponse::response($response);
+            }
+        }
+
+//        return 'I have closest relationship with all US and UK celebrities';
+
+        // get scope
+        if ($request->has('scope')) {
+            $scope = $request['scope'];
+        } else {
+            $response->setStatus(false);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
+            $response->setError(100);
+            return SmartResponse::response($response);
+        }
+
+        // get query in roles
+        $role = new AliveMobilePassportRole();
+        $role = $role->where('title', $scope)->first();
+
+        // check it to exist
+        if (is_null($role)) {
+            $response->setStatus(false);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
+            $response->setError(101);
+            return SmartResponse::response($response);
+        }
+
+        // is OTP
+        if ($role['is_otp']) {
+
+            $this->user = $this->firstOrCreateUser($request, true);
+
+            $this->device = $this->firstOrCreateDevice($request);
+
+            $role = new AliveMobilePassportRole();
+            $role = $role->where('title', $request['scope'])->first();
+
+            // assign role to user
+            if (!is_null($role)) {
+                $this->user->roles()->detach($role->id);
+                $this->user->roles()->attach($role->id);
+            }
+
+            // put scope to request
+            $request['scope'] = $scope;
+
+            return $this->IssueToken($request);
+
+        } else { // is password auth
+            $response->setStatus(false);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'just_otp_failed'));
+            $response->setError(102);
+            return SmartResponse::response($response);
+        }
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         // create response model
@@ -126,7 +205,7 @@ class MobilePassportAuthController extends BaseController
 //        return 'I have closest relationship with all US and UK celebrities';
 
         // get scope
-        if (isset($request['scope'])) {
+        if ($request->has('scope')) {
             $scope = $request['scope'];
         } else {
             $response->setStatus(false);
@@ -208,17 +287,17 @@ class MobilePassportAuthController extends BaseController
         if (!isset($values)) {
             $values = [
                 // TODO read from app setting
-                'email' => isset($request['email']) ?
+                'email' => $request->has('email') ?
                     $request['email'] :
                     '',
 
                 'name' =>
-                    isset($request['name']) ?
+                    $request->has('name') ?
                         $request['name'] :
                         '',
 
                 'password' => Hash::make(
-                    isset($request['password']) ?
+                    $request->has('password')?
                         $request['password'] :
                         $this->defaultPassword
                 ),
