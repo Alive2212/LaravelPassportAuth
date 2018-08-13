@@ -58,4 +58,12 @@ class LaravelMobilePassport
         $request['access_token'] = $accessToken;
         $request['mobile_passport_roles'] = $role->toArray();
     }
+
+    /**
+     * @return string
+     */
+    public static function getDir()
+    {
+        return __DIR__;
+    }
 }
