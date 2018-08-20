@@ -3,6 +3,7 @@
 namespace Alive2212\LaravelMobilePassport;
 
 use Alive2212\LaravelMobilePassport\Console\Commands\Init;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelMobilePassportServiceProvider extends ServiceProvider
