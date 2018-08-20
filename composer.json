@@ -1,6 +1,6 @@
 {
     "name": "alive2212/laravel-mobile-passport",
-    "description": ":description",
+    "description": "This is an illuminate package for one time authentication (OTP) with OAuth2 Base",
     "license": "MIT",
     "authors": [
         {
