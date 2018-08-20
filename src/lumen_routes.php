@@ -11,7 +11,10 @@
 |
 */
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group([
+    'prefix' => 'api',
+    'namespace' => 'Alive2212\LaravelMobilePassport\Http\Controllers'
+], function () use ($router) {
     $router->group(['prefix' => 'v1'], function () use ($router) {
         $router->group(['prefix' => 'alive'], function () use ($router) {
             $router->group(['prefix' => 'role'], function () use ($router) {

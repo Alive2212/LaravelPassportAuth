@@ -14,9 +14,12 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadTranslationsFrom(resource_path('lang/vendor/alive2212'), 'laravel_smart_restful');
+        $this->loadTranslationsFrom(resource_path('lang/vendor/alive2212'),
+            'laravel-mobile-passport');
 
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        if (Schema::hasTable('users')){
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        }
 
         if (!$this->isLumen()) {
             $this->loadRoutesFrom(__DIR__ . '/routes.php');
@@ -29,16 +32,16 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
 
             // Publishing the configuration file.
             $this->publishes([
-                __DIR__ . '/../config/laravel_mobile_passport.php' =>
+                __DIR__ . '/../config/laravel-mobile-passport.php' =>
                     $this->app->basePath() .
                     '/config/' .
-                    'laravel_mobile_passport.php',
-            ], 'laravel_mobile_passport.config');
+                    'laravel-mobile-passport.php',
+            ], 'laravel-mobile-passport.config');
 
             // Publishing the translation files.
             $this->publishes([
                 __DIR__ . '/../resources/lang/' => resource_path('lang/vendor/alive2212'),
-            ], 'laravel_mobile_passport.lang');
+            ], 'laravel-mobile-passport.lang');
 
             // Registering package commands.
             $this->commands([
@@ -54,10 +57,10 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/laravel_mobile_passport.php', 'laravel_mobile_passport');
+        $this->mergeConfigFrom(__DIR__ . '/../config/laravel-mobile-passport.php', 'laravel-mobile-passport');
 
         // Register the service the package provides.
-        $this->app->singleton('laravel_mobile_passport', function ($app) {
+        $this->app->singleton('laravel-mobile-passport', function ($app) {
             return new LaravelMobilePassport;
         });
     }
@@ -69,7 +72,7 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['laravel_mobile_passport'];
+        return ['laravel-mobile-passport'];
     }
 
     /**
