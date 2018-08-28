@@ -98,7 +98,7 @@ class MobilePassportAuthController extends BaseController
     public function __construct()
     {
         //config default users
-        $this->defaultUsers = config('laravel_mobile_passport.default_users');
+        $this->defaultUsers = config('laravel-mobile-passport.default_users');
     }
 
     /**
@@ -317,7 +317,6 @@ class MobilePassportAuthController extends BaseController
     {
         // create response model
         $response = new ResponseModel();
-
         // check validation
         $validationErrors = $this->checkRequestValidation($request, $this->registerByOtpValidateArray);
         if (!is_null($validationErrors)) {
@@ -331,14 +330,10 @@ class MobilePassportAuthController extends BaseController
                 return SmartResponse::response($response);
             }
         }
-
         $this->user = $this->firstOrCreateUser($request, true);
-
         $this->device = $this->firstOrCreateDevice($request);
-
-        $token = $this->generateOtpToken($request);
-        $this->otpToken = $token;
-
+        $request = $this->generateOtpToken($request);
+        $this->otpToken = $request['token'];
         call_user_func(
             LaravelMobilePassportSingleton::$otpCallBack,
             $request,
@@ -346,7 +341,6 @@ class MobilePassportAuthController extends BaseController
             $this->device,
             $this->otpToken
         );
-
         if (env('APP_DEBUG')) {
             $response->setData(collect([
                 'user' => $this->user->toArray(),
@@ -444,10 +438,11 @@ class MobilePassportAuthController extends BaseController
             ) {
                 Cache::put($scopeKey, $request['scope'], $this->otpTokenExpireTime);
                 Cache::put($tokenKey, $defaultUser['token'], $this->otpTokenExpireTime);
-                return $defaultUser['token'];
+                $request['default_user'] = 1;
+                $request['token'] = $defaultUser['token'];
+                return $request;
             }
         }
-
         if (is_null(Cache::get($tokenKey))) {
             // not any cached token
 
@@ -458,8 +453,9 @@ class MobilePassportAuthController extends BaseController
 
             $token = Cache::get($tokenKey);
         }
-
-        return $token;
+        $request['isDefaultUser'] = 1;
+        $request['token'] = $token;
+        return $request;
     }
 
     public function registerByPassword(Request $request)
