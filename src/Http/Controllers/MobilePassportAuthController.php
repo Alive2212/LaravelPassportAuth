@@ -296,7 +296,7 @@ class MobilePassportAuthController extends BaseController
                         $request['name'] :
                         '',
 
-                'password' => Hash::make(
+                'password' => md5(
                     $request->has('password')?
                         $request['password'] :
                         $this->defaultPassword
@@ -494,11 +494,9 @@ class MobilePassportAuthController extends BaseController
             return SmartResponse::response($response);
         }
 
-
         $this->firstOrCreateDevice($request);
 
-        $hash = app('hash');
-        if ($hash->check($request['password'], $this->user->password)) {
+        if (md5($request['password'])==$this->user->password) {
             // Successful
             return $this->IssueToken($request);
         } else {
