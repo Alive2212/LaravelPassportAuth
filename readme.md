@@ -111,6 +111,13 @@ Finally run following command to install passport dependency
 $ art passport:install
 ```
 
+Optional
+for add routes you can put following into boot method at AppServiceProvider 
+```php
+// add mobile passport routes
+LaravelMobilePassport::routes(null,['middleware'=>'cors']);
+```
+
 ## Usage
 1- create roles what you want in to alive_mobile_passport_roles
 *tip: title of roles must unique

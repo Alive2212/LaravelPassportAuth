@@ -530,17 +530,6 @@ class MobilePassportAuthController extends BaseController
         return SmartResponse::response($response);
     }
 
-
-    /**
-     * @param $method
-     * @param $status
-     * @return array|\Illuminate\Contracts\Translation\Translator|null|string
-     */
-    public function getTrans($method, $status)
-    {
-        return trans('laravel_smart_restful::' . 'mobile_passport.' . get_class($this) . '.' . $method . '.' . $status);
-    }
-
     /**
      *
      */

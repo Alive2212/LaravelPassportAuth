@@ -2,9 +2,9 @@
 
 namespace Alive2212\LaravelMobilePassport;
 
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\Passport;
 use PeterPetrus\Auth\PassportToken;
@@ -58,6 +58,32 @@ class LaravelMobilePassport
         $request['access_token'] = $accessToken;
         $request['mobile_passport_roles'] = $role->toArray();
     }
+
+    /**
+     * Binds the Passport routes into the controller.
+     *
+     * @param  callable|null  $callback
+     * @param  array  $options
+     * @return void
+     */
+    public static function routes($callback = null, array $options = [])
+    {
+        $callback = $callback ?: function ($router) {
+            $router->all();
+        };
+
+        $defaultOptions = [
+            'prefix' => '/api',
+            'namespace' => 'Alive2212\LaravelMobilePassport\Http\Controllers',
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
+        Route::group($options, function ($router) use ($callback) {
+            $callback(new RouteRegistrar($router));
+        });
+    }
+
 
     /**
      * @return string
