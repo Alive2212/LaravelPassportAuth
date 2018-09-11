@@ -546,8 +546,8 @@ class MobilePassportAuthController extends BaseController
     {
         $key = 'alive_mobile_passport_' .
             ($prefix == '' ? '' : $prefix . '_') .
-            $request['country_code'] .
-            $request['phone_number'];
+            $request->get('country_code') .
+            $request->get('phone_number');
         return $key;
     }
 
