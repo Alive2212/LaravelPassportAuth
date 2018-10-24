@@ -4,7 +4,6 @@ namespace Alive2212\LaravelMobilePassport\Http\Controllers;
 
 use Alive2212\LaravelMobilePassport\AliveMobilePassportDevice;
 use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
-use Alive2212\LaravelMobilePassport\LaravelMobilePassport;
 use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
 use Alive2212\LaravelSmartResponse\SmartResponse\SmartResponse;
@@ -12,7 +11,6 @@ use Alive2212\LaravelSmartRestful\BaseController;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
 
 class MobilePassportAuthController extends BaseController
 {
