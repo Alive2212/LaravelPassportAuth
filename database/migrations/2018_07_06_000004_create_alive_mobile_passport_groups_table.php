@@ -14,10 +14,10 @@ class CreateAliveMobilePassportGroupsTable extends Migration
     public function up()
     {
         Schema::create('alive_mobile_passport_groups', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             // author
-            $table->unsignedInteger('author_id')
+            $table->unsignedBigInteger('author_id')
                 ->nullable()
                 ->index();
             $table->foreign('author_id')

@@ -14,10 +14,10 @@ class CreateAliveMobilePassportDevicesTable extends Migration
     public function up()
     {
         Schema::create('alive_mobile_passport_devices', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
 
             // author
-            $table->unsignedInteger('author_id')
+            $table->unsignedBigInteger('author_id')
                 ->nullable()
                 ->index();
             $table->foreign('author_id')
@@ -27,7 +27,7 @@ class CreateAliveMobilePassportDevicesTable extends Migration
                 ->onUpdate('cascade');
 
             // User id
-            $table->unsignedInteger('user_id')
+            $table->unsignedBigInteger('user_id')
                 ->index();
             $table->foreign('user_id')
                 ->references('id')

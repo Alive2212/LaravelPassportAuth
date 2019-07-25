@@ -14,14 +14,14 @@ class CreateAliveMobilePassportRoleUserTable extends Migration
     public function up()
     {
         Schema::create('alive_mobile_passport_role_user', function (Blueprint $table) {
-            $table->unsignedInteger('role_id')
+            $table->unsignedBigInteger('role_id')
                 ->index();
             $table->foreign('role_id')
                 ->references('id')
                 ->on('alive_mobile_passport_roles')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->unsignedInteger('user_id')
+            $table->unsignedBigInteger('user_id')
                 ->index();
             $table->foreign('user_id')
                 ->references('id')

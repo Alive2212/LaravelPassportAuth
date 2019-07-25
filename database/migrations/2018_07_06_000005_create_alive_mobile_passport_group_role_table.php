@@ -14,7 +14,7 @@ class CreateAliveMobilePassportGroupRoleTable extends Migration
     public function up()
     {
         Schema::create('alive_mobile_passport_group_role', function (Blueprint $table) {
-            $table->unsignedInteger('role_id')
+            $table->unsignedBigInteger('role_id')
                 ->index();
             $table->foreign('role_id')
                 ->references('id')
@@ -22,7 +22,7 @@ class CreateAliveMobilePassportGroupRoleTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            $table->unsignedInteger('group_id')
+            $table->unsignedBigInteger('group_id')
                 ->index();
             $table->foreign('group_id')
                 ->references('id')
