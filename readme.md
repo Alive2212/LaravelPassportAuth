@@ -53,7 +53,7 @@ public function boot()
     LaravelMobilePassport::initPassportTokenCan();
 
     LaravelMobilePassportSingleton::$otpCallBack = function (
-        Request $reqeust,
+        Request $request,
         User $user,
         AliveMobilePassportDevice $device,
         $token
@@ -63,7 +63,7 @@ public function boot()
     
     
     LaravelMobilePassportSingleton::$otpConfirmCallBack = function (
-        Request $reqeust,
+        Request $request,
         User $user
     ) {
         // put somthing here like update user name with request fileds
@@ -83,7 +83,6 @@ add 'phone_number' & 'country_code' into model $fillable variable:
         'country_code',
     ];
 ```
-
 publish vendor files with following command:
 ```
 php artisan vendor:publish --tag laravel_mobile_passport.lang
@@ -91,7 +90,11 @@ php artisan vendor:publish --tag laravel_mobile_passport.config
 ```
 User model must be extended from BaseAuthModel
 
-In the next step you should install phoenix/eloquent-meta package and it's version related to your laravel version.
+In the next step you should install following package and it's version related to your laravel version.
+* phoenix/eloquent-meta
+* fico7489/laravel-pivot
+
+Add flowing code into `app\User.php` 
 
 ```php
     /**

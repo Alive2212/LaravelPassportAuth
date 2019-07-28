@@ -11,6 +11,7 @@ use Alive2212\LaravelSmartRestful\BaseController;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 
 class MobilePassportAuthController extends BaseController
 {
@@ -27,7 +28,7 @@ class MobilePassportAuthController extends BaseController
     /**
      * @var int
      */
-    protected $otpTokenExpireTime = 5;
+    protected $otpTokenExpireTime = 5 * 60;
 
     /**
      * @var
@@ -122,8 +123,6 @@ class MobilePassportAuthController extends BaseController
             }
         }
 
-//        return 'I have closest relationship with all US and UK celebrities';
-
         // get scope
         if ($request->has('scope')) {
             $scope = $request['scope'];
@@ -200,11 +199,9 @@ class MobilePassportAuthController extends BaseController
             }
         }
 
-//        return 'I have closest relationship with all US and UK celebrities';
-
         // get scope
         if ($request->has('scope')) {
-            $scope = $request['scope'];
+            $scopes = json_decode($request->get('scope'));
         } else {
             $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
@@ -213,19 +210,28 @@ class MobilePassportAuthController extends BaseController
         }
 
         // get query in roles
-        $role = new AliveMobilePassportRole();
-        $role = $role->where('title', $scope)->first();
+        $roles = new AliveMobilePassportRole();
+        $roles = $roles->whereIn('title', $scopes)->get();
 
         // check it to exist
-        if (is_null($role)) {
+        if (count($roles->toArray()) == 0) {
             $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
             $response->setError(101);
             return SmartResponse::response($response);
         }
 
+        $isOTP = true;
+
+        foreach ($roles as $role) {
+            if (!$role["is_otp"]) {
+                $isOTP = false;
+                break;
+            }
+        }
+
         // is OTP
-        if ($role['is_otp']) {
+        if ($isOTP) {
             return $this->registerByOtp($request);
         } else { // is password auth
             return $this->registerByPassword($request);
@@ -295,7 +301,7 @@ class MobilePassportAuthController extends BaseController
                         '',
 
                 'password' => md5(
-                    $request->has('password')?
+                    $request->has('password') ?
                         $request['password'] :
                         $this->defaultPassword
                 ),
@@ -356,7 +362,6 @@ class MobilePassportAuthController extends BaseController
      */
     public function confirmOtp(Request $request)
     {
-//        return 'I have closest relationship with all US and UK celebrities';
         $response = new ResponseModel();
 
         // check validation
@@ -382,20 +387,21 @@ class MobilePassportAuthController extends BaseController
 
             // scope key for cache scopes
             $scopeKey = $this->otpKeyMaker($request, 'scope');
-            $scope = Cache::get($scopeKey);
+            $jsonEncodedScope = Cache::get($scopeKey);
+            $scopes = json_decode($jsonEncodedScope, true);
+            $roles = new AliveMobilePassportRole();
+            $roles = $roles->whereIn('title', $scopes)->first();
 
-
-            $role = new AliveMobilePassportRole();
-            $role = $role->where('title', $scope)->first();
-
-            // assign role to user
-            if (!is_null($role)) {
-                $this->user->roles()->detach($role->id);
-                $this->user->roles()->attach($role->id);
+            foreach ($roles as $role) {
+                // assign role to user
+                if (!is_null($roles)) {
+                    $this->user->roles()->detach($roles->id);
+                    $this->user->roles()->attach($roles->id);
+                }
             }
 
             // put scope to request
-            $request['scope'] = $scope;
+            $request['scope'] = $jsonEncodedScope;
 
             call_user_func(
                 LaravelMobilePassportSingleton::$otpConfirmCallBack,
@@ -441,11 +447,12 @@ class MobilePassportAuthController extends BaseController
                 return $request;
             }
         }
-        if (is_null(Cache::get($tokenKey))) {
+        $cachedTokenKey = Cache::get($tokenKey);
+        if (is_null($cachedTokenKey)) {
             // not any cached token
 
             $token = rand(1000, 9999);
-
+            Cache::put($scopeKey, $request['scope'], $this->otpTokenExpireTime);
             Cache::put($tokenKey, $token, $this->otpTokenExpireTime);
         } else {
 
@@ -492,9 +499,11 @@ class MobilePassportAuthController extends BaseController
             return SmartResponse::response($response);
         }
 
+//        dd("hello");
+
         $this->firstOrCreateDevice($request);
 
-        if (md5($request['password'])==$this->user->password) {
+        if (Hash::check($request->get("password") , $this->user->password)) {
             // Successful
             return $this->IssueToken($request);
         } else {
@@ -512,16 +521,17 @@ class MobilePassportAuthController extends BaseController
      */
     public function IssueToken(Request $request)
     {
+        $scopes = json_decode($request->get("scope"), true);
+        $token = $this->user->createToken("Personal OTP Token", $scopes);
+
         // response object
         $response = new ResponseModel();
 
-        $token = $this->user->createToken($request['scope'], [$request['scope']]);
-
         $response->setData(collect([
-            'user_id' => $token->toArray()['token']['user_id'],
-            'scope' => $request['scope'],
+            'user_id' => $token->token->user_id,
+            'scope' => $request->scope,
             'accessToken' => $token->toArray()['accessToken'],
-            'expires_at' => $token->toArray()['token']['expires_at'],
+            'expires_at' => $token->token->expires_at->timestamp,
         ]));
         $response->setMessage($this->getTrans(__FUNCTION__, 'successful'));
 
@@ -555,12 +565,15 @@ class MobilePassportAuthController extends BaseController
      */
     public function userHavePermission(Request $request): bool
     {
-        $userHaveRole = false;
-        foreach ($this->user->toArray()['roles'] as $roleParams) {
-            if ($roleParams['title'] == $request['scope']) {
-                $userHaveRole = true;
+        $scopesParams = json_decode($request['scope'],true);
+        $secureRequestedScopes = AliveMobilePassportRole::whereIn("title",$scopesParams)->where("is_otp", false)->pluck("title")->toArray();
+        $userCurrentRoles = $this->user->roles->where("is_otp",false)->pluck("title")->toArray();
+
+        foreach ($secureRequestedScopes as $secureRequestedScope) {
+            if (!in_array($secureRequestedScope, $userCurrentRoles)) {
+                return false;
             }
         }
-        return $userHaveRole;
+        return true;
     }
 }
