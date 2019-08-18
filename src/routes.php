@@ -23,6 +23,7 @@ Route::namespace('Alive2212\LaravelMobilePassport\Http\Controllers')->prefix('ap
             Route::prefix('alive')->group(function () {
                 Route::prefix('passport')->group(function () {
                     Route::prefix('auth')->group(function () {
+                        Route::post('third_party', 'MobilePassportAuthController@createThirdPartyUserToken')->name('mobile_passport.auth.third_party');
                         Route::post('register', 'MobilePassportAuthController@store')->name('mobile_passport.auth.register');
                         Route::post('confirm', 'MobilePassportAuthController@confirmOtp')->name('mobile_passport.auth.confirm');
                     });

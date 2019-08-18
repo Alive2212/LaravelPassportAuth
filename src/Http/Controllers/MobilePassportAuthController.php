@@ -4,14 +4,19 @@ namespace Alive2212\LaravelMobilePassport\Http\Controllers;
 
 use Alive2212\LaravelMobilePassport\AliveMobilePassportDevice;
 use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
+use Alive2212\LaravelMobilePassport\Http\Requests\CreateThirdPartyUserToken;
 use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
 use Alive2212\LaravelSmartResponse\SmartResponse\SmartResponse;
 use Alive2212\LaravelSmartRestful\BaseController;
 use App\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Passport\Client;
+use Laravel\Passport\Token;
+use Lcobucci\JWT\Parser;
 
 class MobilePassportAuthController extends BaseController
 {
@@ -51,6 +56,11 @@ class MobilePassportAuthController extends BaseController
     protected $storeValidateArray = [
         'scope' => 'required',
     ];
+
+    /**
+     * @var object
+     */
+    protected $token;
 
     /**
      * @var array
@@ -174,7 +184,6 @@ class MobilePassportAuthController extends BaseController
         }
 
     }
-
 
     /**
      * @param Request $request
@@ -463,6 +472,10 @@ class MobilePassportAuthController extends BaseController
         return $request;
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function registerByPassword(Request $request)
     {
         // create response model
@@ -503,7 +516,7 @@ class MobilePassportAuthController extends BaseController
 
         $this->firstOrCreateDevice($request);
 
-        if (Hash::check($request->get("password") , $this->user->password)) {
+        if (Hash::check($request->get("password"), $this->user->password)) {
             // Successful
             return $this->IssueToken($request);
         } else {
@@ -519,19 +532,19 @@ class MobilePassportAuthController extends BaseController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function IssueToken(Request $request)
+    public function IssueToken(Request $request): JsonResponse
     {
         $scopes = json_decode($request->get("scope"), true);
-        $token = $this->user->createToken("Personal OTP Token", $scopes);
+        $this->token = $this->user->createToken("Personal OTP Token", $scopes);
 
         // response object
         $response = new ResponseModel();
 
         $response->setData(collect([
-            'user_id' => $token->token->user_id,
+            'user_id' => $this->token->token->user_id,
             'scope' => $request->scope,
-            'accessToken' => $token->toArray()['accessToken'],
-            'expires_at' => $token->token->expires_at->timestamp,
+            'accessToken' => $this->token->toArray()['accessToken'],
+            'expires_at' => $this->token->token->expires_at->timestamp,
         ]));
         $response->setMessage($this->getTrans(__FUNCTION__, 'successful'));
 
@@ -565,9 +578,9 @@ class MobilePassportAuthController extends BaseController
      */
     public function userHavePermission(Request $request): bool
     {
-        $scopesParams = json_decode($request['scope'],true);
-        $secureRequestedScopes = AliveMobilePassportRole::whereIn("title",$scopesParams)->where("is_otp", false)->pluck("title")->toArray();
-        $userCurrentRoles = $this->user->roles->where("is_otp",false)->pluck("title")->toArray();
+        $scopesParams = json_decode($request['scope'], true);
+        $secureRequestedScopes = AliveMobilePassportRole::whereIn("title", $scopesParams)->where("is_otp", false)->pluck("title")->toArray();
+        $userCurrentRoles = $this->user->roles->where("is_otp", false)->pluck("title")->toArray();
 
         foreach ($secureRequestedScopes as $secureRequestedScope) {
             if (!in_array($secureRequestedScope, $userCurrentRoles)) {
@@ -575,5 +588,35 @@ class MobilePassportAuthController extends BaseController
             }
         }
         return true;
+    }
+
+    /**
+     * @param CreateThirdPartyUserToken $request
+     * @return JsonResponse
+     */
+    public function createThirdPartyUserToken(CreateThirdPartyUserToken $request):JsonResponse
+    {
+        $this->user = $this->firstOrCreateUser($request);
+        $response = $this->IssueToken($request);
+
+        $requestClient = Client::find($request->client_id);
+        if (is_null($requestClient)) {
+            return response()->json([
+                "message" => "client id does not exist",
+            ], 404);
+        }
+        if ($requestClient->secret != $request->client_secret) {
+            return response()->json([
+                "message" => "client secret not valid",
+            ], 403);
+        }
+
+        $accessToken = $this->token->toArray()['accessToken'];
+        $tokenId = (new Parser())->parse($accessToken)->getHeader('jti');
+        $token = Token::find($tokenId);
+        $token->client_id = $requestClient->id;
+        $token->save();
+
+        return $response;
     }
 }

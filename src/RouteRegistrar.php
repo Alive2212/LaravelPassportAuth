@@ -58,6 +58,10 @@ class RouteRegistrar
             'prefix' => config('laravel-mobile-passport.route.custom_prefix'),
         ], function (Router $router) {
             $router->post(
+                '/passport/auth/third_party',
+                'MobilePassportAuthController@createThirdPartyUserToken'
+            )->name('mobile_passport.auth.third_party');
+            $router->post(
                 '/passport/auth/register',
                 'MobilePassportAuthController@store'
             )->name('mobile_passport.auth.register');
