@@ -412,13 +412,16 @@ class MobilePassportAuthController extends BaseController
             // put scope to request
             $request['scope'] = $jsonEncodedScope;
 
+            $result = $this->IssueToken($request);
+
             call_user_func(
                 LaravelMobilePassportSingleton::$otpConfirmCallBack,
                 $request,
-                $this->user
+                $this->user,
+                $this->token
             );
 
-            return $this->IssueToken($request);
+            return $result;
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'token_failed'));
@@ -536,7 +539,6 @@ class MobilePassportAuthController extends BaseController
     {
         $scopes = json_decode($request->get("scope"), true);
         $this->token = $this->user->createToken("Personal OTP Token", $scopes);
-
         // response object
         $response = new ResponseModel();
 
@@ -594,7 +596,7 @@ class MobilePassportAuthController extends BaseController
      * @param CreateThirdPartyUserToken $request
      * @return JsonResponse
      */
-    public function createThirdPartyUserToken(CreateThirdPartyUserToken $request):JsonResponse
+    public function createThirdPartyUserToken(CreateThirdPartyUserToken $request): JsonResponse
     {
         $this->user = $this->firstOrCreateUser($request);
         $response = $this->IssueToken($request);
