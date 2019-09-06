@@ -545,7 +545,7 @@ class MobilePassportAuthController extends BaseController
         $response->setData(collect([
             'user_id' => $this->token->token->user_id,
             'scope' => $request->scope,
-            'accessToken' => $this->token->toArray()['accessToken'],
+            'access_token' => $this->token->toArray()['accessToken'],
             'expires_at' => $this->token->token->expires_at->timestamp,
         ]));
         $response->setMessage($this->getTrans(__FUNCTION__, 'successful'));
