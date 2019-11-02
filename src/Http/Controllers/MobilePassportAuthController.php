@@ -129,6 +129,7 @@ class MobilePassportAuthController extends BaseController
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
                 $response->setStatus(false);
                 $response->setError(99);
+                $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
         }
@@ -204,6 +205,7 @@ class MobilePassportAuthController extends BaseController
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
                 $response->setStatus(false);
                 $response->setError(99);
+                $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
         }
@@ -343,6 +345,7 @@ class MobilePassportAuthController extends BaseController
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
                 $response->setStatus(false);
                 $response->setError(99);
+                $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
         }
@@ -386,6 +389,7 @@ class MobilePassportAuthController extends BaseController
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
                 $response->setStatus(false);
                 $response->setError(99);
+                $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
         }
@@ -500,6 +504,7 @@ class MobilePassportAuthController extends BaseController
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
                 $response->setStatus(false);
                 $response->setError(99);
+                $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
         }
