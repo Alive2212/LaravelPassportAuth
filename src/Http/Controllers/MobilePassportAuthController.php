@@ -211,6 +211,9 @@ class MobilePassportAuthController extends BaseController
         // get scope
         if ($request->has('scope')) {
             $scopes = json_decode($request->get('scope'));
+            if (is_null($scopes)) {
+                $scopes = $request->get('scope');
+            }
         } else {
             $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
@@ -220,7 +223,7 @@ class MobilePassportAuthController extends BaseController
 
         // get query in roles
         $roles = new AliveMobilePassportRole();
-        $roles = $roles->whereIn('title', $scopes)->get();
+        $roles = $roles->whereIn('title', array($scopes))->get();
 
         // check it to exist
         if (count($roles->toArray()) == 0) {
@@ -398,8 +401,11 @@ class MobilePassportAuthController extends BaseController
             $scopeKey = $this->otpKeyMaker($request, 'scope');
             $jsonEncodedScope = Cache::get($scopeKey);
             $scopes = json_decode($jsonEncodedScope, true);
+            if (is_null($scopes)) {
+                $scopes = $jsonEncodedScope;
+            }
             $roles = new AliveMobilePassportRole();
-            $roles = $roles->whereIn('title', $scopes)->first();
+            $roles = $roles->whereIn('title', array($scopes))->first();
 
             foreach ($roles as $role) {
                 // assign role to user
@@ -538,7 +544,10 @@ class MobilePassportAuthController extends BaseController
     public function IssueToken(Request $request): JsonResponse
     {
         $scopes = json_decode($request->get("scope"), true);
-        $this->token = $this->user->createToken("Personal OTP Token", $scopes);
+        if (is_null($scopes)) {
+            $scopes = $request->get("scope");
+        }
+        $this->token = $this->user->createToken("Personal OTP Token", array($scopes));
         // response object
         $response = new ResponseModel();
 
