@@ -7,9 +7,10 @@ use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
 use Alive2212\LaravelMobilePassport\Http\Requests\CreateThirdPartyUserToken;
 use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
-use Alive2212\LaravelSmartResponse\SmartResponse\SmartResponse;
+use Alive2212\LaravelSmartResponse\SmartResponse;
 use Alive2212\LaravelSmartRestful\BaseController;
 use App\User;
+use Illuminate\Config\Repository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,7 +22,7 @@ use Lcobucci\JWT\Parser;
 class MobilePassportAuthController extends BaseController
 {
     /**
-     * @var \Illuminate\Config\Repository|mixed
+     * @var Repository|mixed
      */
     protected $defaultUsers;
 
@@ -112,7 +113,7 @@ class MobilePassportAuthController extends BaseController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function credentialStore(Request $request)
     {
@@ -127,9 +128,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
-                $response->setStatusCode(400);
+                $response->setStatusCode(403);
                 return SmartResponse::response($response);
             }
         }
@@ -138,9 +137,8 @@ class MobilePassportAuthController extends BaseController
         if ($request->has('scope')) {
             $scope = $request['scope'];
         } else {
-            $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
-            $response->setError(100);
+            $response->setStatusCode(404);
             return SmartResponse::response($response);
         }
 
@@ -150,9 +148,8 @@ class MobilePassportAuthController extends BaseController
 
         // check it to exist
         if (is_null($role)) {
-            $response->setStatus(false);
-            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
-            $response->setError(101);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_not_found'));
+            $response->setStatusCode(404);
             return SmartResponse::response($response);
         }
 
@@ -178,9 +175,8 @@ class MobilePassportAuthController extends BaseController
             return $this->IssueToken($request);
 
         } else { // is password auth
-            $response->setStatus(false);
-            $response->setMessage($this->getTrans(__FUNCTION__, 'just_otp_failed'));
-            $response->setError(102);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'token_not_valid'));
+            $response->setStatusCode(403);
             return SmartResponse::response($response);
         }
 
@@ -188,7 +184,7 @@ class MobilePassportAuthController extends BaseController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -203,9 +199,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
-                $response->setStatusCode(400);
+                $response->setStatusCode(422);
                 return SmartResponse::response($response);
             }
         }
@@ -217,9 +211,8 @@ class MobilePassportAuthController extends BaseController
                 $scopes = $request->get('scope');
             }
         } else {
-            $response->setStatus(false);
-            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
-            $response->setError(100);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_not_found'));
+            $response->setStatusCode(404);
             return SmartResponse::response($response);
         }
 
@@ -229,9 +222,8 @@ class MobilePassportAuthController extends BaseController
 
         // check it to exist
         if (count($roles->toArray()) == 0) {
-            $response->setStatus(false);
-            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
-            $response->setError(101);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'scope_not_found'));
+            $response->setStatusCode(404);
             return SmartResponse::response($response);
         }
 
@@ -329,7 +321,7 @@ class MobilePassportAuthController extends BaseController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function registerByOtp(Request $request)
     {
@@ -343,8 +335,6 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -373,7 +363,7 @@ class MobilePassportAuthController extends BaseController
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function confirmOtp(Request $request)
     {
@@ -387,8 +377,6 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -435,8 +423,7 @@ class MobilePassportAuthController extends BaseController
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'token_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setStatusCode(401);
             return SmartResponse::response($response);
         }
     }
@@ -502,9 +489,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
-                $response->setStatusCode(400);
+                $response->setStatusCode(422);
                 return SmartResponse::response($response);
             }
         }
@@ -512,17 +497,15 @@ class MobilePassportAuthController extends BaseController
         $this->user = $this->firstOrCreateUser($request);
 
         if (is_null($this->user)) {
-            $response->setMessage($this->getTrans(__FUNCTION__, 'email_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'email_not_found'));
+            $response->setStatusCode(404);
             return SmartResponse::response($response);
         }
 
         //check for user roles
         if (!$this->userHavePermission($request)) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'permission_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setStatusCode(403);
             return SmartResponse::response($response);
         }
 
@@ -535,16 +518,15 @@ class MobilePassportAuthController extends BaseController
             return $this->IssueToken($request);
         } else {
             // not Successful
-            $response->setMessage($this->getTrans(__FUNCTION__, 'password_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setMessage($this->getTrans(__FUNCTION__, 'user_or_password_failed'));
+            $response->setStatusCode(403);
             return SmartResponse::response($response);
         }
     }
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function IssueToken(Request $request): JsonResponse
     {
@@ -552,7 +534,12 @@ class MobilePassportAuthController extends BaseController
         if (is_null($scopes)) {
             $scopes = $request->get("scope");
         }
-        $this->token = $this->user->createToken("Personal OTP Token", array($scopes));
+//        $user = new User();
+//        dd($scopes);
+//        dd($this->user->createToken("Personal OTP Token", ['place-orders']));
+//        dd($this->user->createToken("Personal OTP Token", ($scopes)));
+//        dd('here');
+        $this->token = $this->user->createToken("Personal OTP Token", $scopes);
         // response object
         $response = new ResponseModel();
 

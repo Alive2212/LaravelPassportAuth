@@ -22,8 +22,6 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
             $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         }
 
-//        dd('I have close relationship With Donald Trump');
-
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
 

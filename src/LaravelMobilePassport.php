@@ -3,6 +3,7 @@
 namespace Alive2212\LaravelMobilePassport;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +21,7 @@ class LaravelMobilePassport
             $roles = new AliveMobilePassportRole();
             $scopes = [];
             foreach ($roles->get()->toArray() as $role) {
-                $scopes = array_add($scopes, $role['title'], $role['description']);
+                $scopes = Arr::add($scopes, $role['title'], $role['description']);
             }
             Passport::tokensCan($scopes);
         }
@@ -41,7 +42,6 @@ class LaravelMobilePassport
      */
     public static function initAccessToken(Request $request)
     {
-//        dd('I have closest relationship with all US & UK celebrities');
         if (!isset($request['bearerTokenParams'])) {
             self::initUserInfo($request);
         }

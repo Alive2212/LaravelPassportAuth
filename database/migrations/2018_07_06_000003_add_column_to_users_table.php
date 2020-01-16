@@ -34,7 +34,8 @@ class AddColumnToUsersTable extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             //country code
-            $table->text('country_code')
+            $table->string('country_code')
+                ->default('+98')
                 ->after('id');
 
             // phone_number

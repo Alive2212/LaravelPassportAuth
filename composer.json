@@ -14,8 +14,8 @@
     "require": {
         "peterpetrus/passport-token": "^0.0",
         "illuminate/support": "~5",
-        "alive2212/laravel-smart-restful": "^1.0",
-        "laravel/passport": "*"
+        "alive2212/laravel-smart-restful": "^2",
+        "laravel/passport": "^8"
     },
     "require-dev": {
         "phpunit/phpunit": "~6.0",
