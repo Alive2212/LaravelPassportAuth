@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d299ef6-28a6-4728-9021-9e1982d3cd45" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/laravelpassportauth.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2018_07_06_000003_add_column_to_users_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2018_07_06_000003_add_column_to_users_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Http/Controllers/MobilePassportAuthController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Http/Controllers/MobilePassportAuthController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/LaravelMobilePassport.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/LaravelMobilePassport.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/LaravelMobilePassportServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/LaravelMobilePassportServiceProvider.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,13 +18,18 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database/migrations/2018_07_06_000003_add_column_to_users_table.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="226">
               <caret line="34" column="60" selection-start-line="34" selection-start-column="60" selection-end-line="34" selection-end-column="60" />
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/composer.json">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
@@ -53,7 +53,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="67" />
     <option name="y" value="25" />
     <option name="width" value="927" />
@@ -90,6 +90,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -119,12 +120,12 @@
       <updated>1578938049481</updated>
       <workItem from="1578938051097" duration="2600000" />
       <workItem from="1579014974026" duration="618000" />
-      <workItem from="1579178156491" duration="613000" />
+      <workItem from="1579178156491" duration="1064000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3831000" />
+    <option name="totallyTimeSpent" value="4282000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -169,6 +170,9 @@
           <caret line="34" column="60" selection-start-line="34" selection-start-column="60" selection-end-line="34" selection-end-column="60" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/composer.json">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
   </component>
 </project>

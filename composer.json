@@ -13,7 +13,7 @@
     "keywords": ["Laravel", "LaravelMobilePassport"],
     "require": {
         "peterpetrus/passport-token": "^0.0",
-        "illuminate/support": "~5",
+        "illuminate/support": "~6",
         "alive2212/laravel-smart-restful": "^2",
         "laravel/passport": "^8"
     },
