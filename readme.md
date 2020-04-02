@@ -143,6 +143,18 @@ Please see the [changelog](changelog.md) for more information on what has change
 $ composer test
 ```
 
+Relation of this package with another one is:
+* array helper -> nothing
+* laravel excel helper -> nothing
+* laravel onion pattern -> nothing
+* laravel query helper -> nothing
+* laravel reflection helper -> nothing
+* laravel request helper -> nothing
+* laravel string helper -> nothing
+* laravel smart response -> array helper
+* laravel smart restful -> laravel excel helper, laravel onion pattern, laravel query helper, laravel reflection helper, laravel smart response, laravel string helper
+* laravel passport auth -> laravel smart restful 
+
 ## Contributing
 
 Please see [contributing.md](contributing.md) for details and a todolist.
