@@ -12,7 +12,7 @@ This is where your description should go. Take a look at [contributing.md](contr
 Via Composer
 
 ``` bash
-$ composer require alive2212/laravelmobilepassport
+$ composer require alive2212/laravel-mobile-passport
 ```
 if use Laravel < 5.4 add to service provider 'config/app.php'
 ```php
