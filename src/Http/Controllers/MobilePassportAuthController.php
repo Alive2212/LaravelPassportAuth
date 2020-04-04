@@ -7,7 +7,7 @@ use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
 use Alive2212\LaravelMobilePassport\Http\Requests\CreateThirdPartyUserToken;
 use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
-use Alive2212\LaravelSmartResponse\SmartResponse\SmartResponse;
+use Alive2212\LaravelSmartResponse\SmartResponse;
 use Alive2212\LaravelSmartRestful\BaseController;
 use App\User;
 use Illuminate\Http\JsonResponse;
@@ -127,8 +127,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
+                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -138,9 +137,8 @@ class MobilePassportAuthController extends BaseController
         if ($request->has('scope')) {
             $scope = $request['scope'];
         } else {
-            $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
-            $response->setError(100);
+            $response->setError(["error_number"=>100]);
             return SmartResponse::response($response);
         }
 
@@ -150,9 +148,8 @@ class MobilePassportAuthController extends BaseController
 
         // check it to exist
         if (is_null($role)) {
-            $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
-            $response->setError(101);
+            $response->setError(["error_number"=>101]);
             return SmartResponse::response($response);
         }
 
@@ -178,9 +175,8 @@ class MobilePassportAuthController extends BaseController
             return $this->IssueToken($request);
 
         } else { // is password auth
-            $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'just_otp_failed'));
-            $response->setError(102);
+            $response->setError(["error_number"=>102]);
             return SmartResponse::response($response);
         }
 
@@ -203,8 +199,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
+                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -217,9 +212,8 @@ class MobilePassportAuthController extends BaseController
                 $scopes = $request->get('scope');
             }
         } else {
-            $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
-            $response->setError(100);
+            $response->setError(["error_number"=>100]);
             return SmartResponse::response($response);
         }
 
@@ -229,9 +223,8 @@ class MobilePassportAuthController extends BaseController
 
         // check it to exist
         if (count($roles->toArray()) == 0) {
-            $response->setStatus(false);
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
-            $response->setError(101);
+            $response->setError(["error_number"=>101]);
             return SmartResponse::response($response);
         }
 
@@ -343,8 +336,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
+                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -387,8 +379,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
+                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -435,8 +426,7 @@ class MobilePassportAuthController extends BaseController
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'token_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
     }
@@ -502,8 +492,7 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setStatus(false);
-                $response->setError(99);
+                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
                 return SmartResponse::response($response);
             }
@@ -513,16 +502,14 @@ class MobilePassportAuthController extends BaseController
 
         if (is_null($this->user)) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'email_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
 
         //check for user roles
         if (!$this->userHavePermission($request)) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'permission_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
 
@@ -536,8 +523,7 @@ class MobilePassportAuthController extends BaseController
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'password_failed'));
-            $response->setStatus(false);
-            $response->setError(401);
+            $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
     }
