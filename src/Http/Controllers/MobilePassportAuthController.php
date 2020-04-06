@@ -538,7 +538,7 @@ class MobilePassportAuthController extends BaseController
         if (is_null($scopes)) {
             $scopes = $request->get("scope");
         }
-        $this->token = $this->user->createToken("Personal OTP Token", array($scopes));
+        $this->token = $this->user->createToken("Personal OTP Token", $scopes);
         // response object
         $response = new ResponseModel();
 
