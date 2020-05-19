@@ -28,7 +28,7 @@ class MobilePassportAuthController extends BaseController
     /**
      * @var string
      */
-    protected $defaultPassword = 'MniBN&IhmPowerFm!Dokhan$2018';
+    protected $defaultPassword = null;
 
     /**
      * @var int
@@ -307,11 +307,10 @@ class MobilePassportAuthController extends BaseController
                         $request['name'] :
                         '',
 
-                'password' => md5(
+                'password' =>
                     $request->has('password') ?
-                        $request['password'] :
-                        $this->defaultPassword
-                ),
+                        md5($request['password']) :
+                        $this->defaultPassword,
             ];
         }
 
