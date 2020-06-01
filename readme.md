@@ -65,7 +65,8 @@ public function boot()
     LaravelMobilePassportSingleton::$otpConfirmCallBack = function (
         Request $request,
         User $user,
-        PersonalAccessTokenResult $token
+        PersonalAccessTokenResult $token,
+        ResponseModel $response
     ) {
         // put somthing here like update user name with request fileds
     };
