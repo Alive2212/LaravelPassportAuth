@@ -28,6 +28,7 @@ class MobilePassportAuthController extends BaseController
     /**
      * @var string
      */
+//    protected $defaultPassword = 'MniBN&IhmPowerFm!Dokhan$2018';
     protected $defaultPassword = null;
 
     /**
@@ -310,7 +311,8 @@ class MobilePassportAuthController extends BaseController
                 'password' =>
                     $request->has('password') ?
                         md5($request['password']) :
-                        $this->defaultPassword,
+                        $this->defaultPassword
+                ,
             ];
         }
 
@@ -414,14 +416,18 @@ class MobilePassportAuthController extends BaseController
 
             $result = $this->IssueToken($request);
 
-            call_user_func(
+            $response = call_user_func(
                 LaravelMobilePassportSingleton::$otpConfirmCallBack,
                 $request,
                 $this->user,
-                $this->token
+                $this->token,
+                $response
             );
+            if (is_null($response)) {
+                return $result;
+            }
+            return SmartResponse::response($response);
 
-            return $result;
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'token_failed'));
