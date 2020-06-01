@@ -128,8 +128,8 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
+                $response->setError(["error_number"=>99]);
                 return SmartResponse::response($response);
             }
         }
@@ -139,6 +139,7 @@ class MobilePassportAuthController extends BaseController
             $scope = $request['scope'];
         } else {
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
+            $response->setStatusCode(404);
             $response->setError(["error_number"=>100]);
             return SmartResponse::response($response);
         }
@@ -150,6 +151,7 @@ class MobilePassportAuthController extends BaseController
         // check it to exist
         if (is_null($role)) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
+            $response->setStatusCode(404);
             $response->setError(["error_number"=>101]);
             return SmartResponse::response($response);
         }
@@ -177,6 +179,7 @@ class MobilePassportAuthController extends BaseController
 
         } else { // is password auth
             $response->setMessage($this->getTrans(__FUNCTION__, 'just_otp_failed'));
+            $response->setStatusCode(403);
             $response->setError(["error_number"=>102]);
             return SmartResponse::response($response);
         }
@@ -200,8 +203,8 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
+                $response->setError(["error_number"=>99]);
                 return SmartResponse::response($response);
             }
         }
@@ -214,6 +217,7 @@ class MobilePassportAuthController extends BaseController
             }
         } else {
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_filed_failed'));
+            $response->setStatusCode(404);
             $response->setError(["error_number"=>100]);
             return SmartResponse::response($response);
         }
@@ -225,6 +229,7 @@ class MobilePassportAuthController extends BaseController
         // check it to exist
         if (count($roles->toArray()) == 0) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'scope_exist_failed'));
+            $response->setStatusCode(404);
             $response->setError(["error_number"=>101]);
             return SmartResponse::response($response);
         }
@@ -337,8 +342,8 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
+                $response->setError(["error_number"=>99]);
                 return SmartResponse::response($response);
             }
         }
@@ -380,8 +385,8 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
+                $response->setError(["error_number"=>99]);
                 return SmartResponse::response($response);
             }
         }
@@ -431,7 +436,8 @@ class MobilePassportAuthController extends BaseController
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'token_failed'));
-            $response->setError(["error_number"=>401]);
+            $response->setStatusCode(403);
+            $response->setError(["error_number"=>403]);
             return SmartResponse::response($response);
         }
     }
@@ -497,8 +503,8 @@ class MobilePassportAuthController extends BaseController
                     $response->setData(collect($validationErrors->toArray()));
                 }
                 $response->setMessage($this->getTrans(__FUNCTION__, 'validation_failed'));
-                $response->setError(["error_number"=>99]);
                 $response->setStatusCode(400);
+                $response->setError(["error_number"=>99]);
                 return SmartResponse::response($response);
             }
         }
@@ -507,6 +513,7 @@ class MobilePassportAuthController extends BaseController
 
         if (is_null($this->user)) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'email_failed'));
+            $response->setStatusCode(401);
             $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
@@ -514,6 +521,7 @@ class MobilePassportAuthController extends BaseController
         //check for user roles
         if (!$this->userHavePermission($request)) {
             $response->setMessage($this->getTrans(__FUNCTION__, 'permission_failed'));
+            $response->setStatusCode(401);
             $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
@@ -528,6 +536,7 @@ class MobilePassportAuthController extends BaseController
         } else {
             // not Successful
             $response->setMessage($this->getTrans(__FUNCTION__, 'password_failed'));
+            $response->setStatusCode(401);
             $response->setError(["error_number"=>401]);
             return SmartResponse::response($response);
         }
