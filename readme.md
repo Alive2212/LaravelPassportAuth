@@ -14,7 +14,7 @@ Via Composer
 ``` bash
 $ composer require alive2212/laravel-mobile-passport
 ```
-if use Laravel < 5.4 add to service provider 'config/app.php'
+add to service provider 'config/app.php'
 ```php
     'providers' => [
         ...
@@ -58,7 +58,8 @@ public function boot()
         AliveMobilePassportDevice $device,
         $token
     ) {
-        // dispach send sms job here to send notification
+        // dispatch send sms job here to send notification
+
     };
     
     
@@ -68,7 +69,8 @@ public function boot()
         PersonalAccessTokenResult $token,
         ResponseModel $response
     ) {
-        // put somthing here like update user name with request fileds
+        // put something here like update user name with request fields
+        
     };
     
 }
