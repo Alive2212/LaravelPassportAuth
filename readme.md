@@ -75,7 +75,7 @@ public function boot()
     
 }
 ```
-######tip: if ENV_DEBUG in .env file set to false don't return any data in register by token 
+* tip: if ENV_DEBUG in .env file set to false don't return any data in register by token 
 
 add 'phone_number' & 'country_code' into model $fillable variable:
 ```php
