@@ -68,6 +68,12 @@ class CreateAliveMobilePassportDevicesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('alive_mobile_passport_devices');
+        Schema::table('alive_mobile_passport_devices', function (Blueprint $table) {
+            $table->dropForeign(['author_id']);
+            $table->dropColumn('author_id');
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
+            $table->drop('alive_mobile_passport_devices');
+        });
     }
 }

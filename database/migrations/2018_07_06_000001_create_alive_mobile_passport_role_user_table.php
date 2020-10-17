@@ -38,6 +38,8 @@ class CreateAliveMobilePassportRoleUserTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('alive_mobile_passport_role_user');
+        Schema::table('alive_mobile_passport_role_user', function (Blueprint $table) {
+            $table->drop('alive_mobile_passport_role_user');
+        });
     }
 }
