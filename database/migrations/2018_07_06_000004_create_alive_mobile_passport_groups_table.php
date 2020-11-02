@@ -16,7 +16,7 @@ class CreateAliveMobilePassportGroupsTable extends Migration
         Schema::create('alive_mobile_passport_groups', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            // author
+            // Author
             $table->unsignedBigInteger('author_id')
                 ->nullable()
                 ->index();
@@ -26,18 +26,19 @@ class CreateAliveMobilePassportGroupsTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            // title
-            $table->text('title');
+            // Key
+            $table->string('key');
 
-            // subtitle
-            $table->text('subtitle');
+            // Content
+            $table->string('title');
+            $table->string('subtitle')
+                ->nullable();
+            $table->text('description')
+                ->nullable();
 
-            // description
-            $table->text('description');
-
-            // revoked
-            $table->boolean('revoked')
-                ->default(false);
+            // Active
+            $table->boolean('active')
+                ->default(true);
 
             $table->timestamps();
         });

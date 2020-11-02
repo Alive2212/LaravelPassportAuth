@@ -9,11 +9,10 @@ use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
 use Alive2212\LaravelSmartResponse\SmartResponse;
 use Alive2212\LaravelSmartRestful\BaseController;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\Client;
 use Laravel\Passport\Token;
 use Lcobucci\JWT\Parser;
@@ -530,7 +529,7 @@ class MobilePassportAuthController extends BaseController
 
         $this->firstOrCreateDevice($request);
 
-        if (Hash::check($request->get("password"), $this->user->password)) {
+        if (md5($request->get("password")) == $this->user->password) {
             // Successful
             return $this->IssueToken($request);
         } else {

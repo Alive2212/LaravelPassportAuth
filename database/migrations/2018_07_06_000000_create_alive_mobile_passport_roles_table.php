@@ -16,7 +16,7 @@ class CreateAliveMobilePassportRolesTable extends Migration
         Schema::create('alive_mobile_passport_roles', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            // author
+            // Author
             $table->unsignedBigInteger('author_id')
                 ->nullable()
                 ->index();
@@ -26,20 +26,21 @@ class CreateAliveMobilePassportRolesTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            // title
-            $table->text('title');
+            // Key
+            $table->string('key');
 
-            // subtitle
-            $table->text('subtitle');
+            // Content
+            $table->string('title');
+            $table->string('subtitle')
+                ->nullable();
+            $table->text('description')
+                ->nullable();
 
-            // description
-            $table->text('description');
-
-            // level
+            // Level
             $table->unsignedInteger('level')
                 ->default(0);
 
-            // revoked
+            // IS OTP for send sms
             $table->boolean('is_otp')
                 ->default(false);
 
