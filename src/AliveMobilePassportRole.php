@@ -14,6 +14,7 @@ class AliveMobilePassportRole extends BaseModel
      */
     protected $fillable = [
         'author_id',
+        'key',
         'title',
         'subtitle',
         'description',
