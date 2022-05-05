@@ -91,6 +91,7 @@ publish vendor files with following command:
 ```
 php artisan vendor:publish --tag laravel-mobile-passport.lang
 php artisan vendor:publish --tag laravel-mobile-passport.config
+php artisan vendor:publish --tag laravel-mobile-passport.migrations
 ```
 User model must be extended from BaseAuthModel
 
