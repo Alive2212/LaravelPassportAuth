@@ -8,6 +8,11 @@ use App\User;
 class AliveMobilePassportRole extends BaseModel
 {
     /**
+     * @var string[]
+     */
+    public $uniqueFields = ['key'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
