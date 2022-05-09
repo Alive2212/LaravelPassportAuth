@@ -5,6 +5,7 @@ namespace Alive2212\LaravelMobilePassport;
 use Alive2212\LaravelMobilePassport\Console\Commands\Init;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use function Couchbase\defaultDecoder;
 
 class LaravelMobilePassportServiceProvider extends ServiceProvider
 {
@@ -42,8 +43,19 @@ class LaravelMobilePassportServiceProvider extends ServiceProvider
 
             // Publishing the database files.
             $this->publishes([
-                __DIR__ . '/../database/migrations/' => database_path('/migrations/'),
+                __DIR__ . '/../database/migrations/' => database_path('/migrations'),
             ], 'laravel-mobile-passport.migrations');
+
+            // Publishing the database files.
+            if ((explode(".", app()->version())[0] > 7)) {
+                $this->publishes([
+                    __DIR__ . '/Models/' => base_path('/app/Models'),
+                ], 'laravel-mobile-passport.models');
+            }else{
+                $this->publishes([
+                    __DIR__ . '/Models/' => base_path('/app'),
+                ], 'laravel-mobile-passport.models');
+            }
 
             // Registering package commands.
             $this->commands([

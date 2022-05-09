@@ -1,6 +1,6 @@
 <?php
 
-namespace Alive2212\LaravelMobilePassport;
+namespace Alive2212\LaravelMobilePassport\Models;
 
 use Alive2212\LaravelSmartRestful\BaseModel;
 use App\User;
