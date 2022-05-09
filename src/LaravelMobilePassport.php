@@ -2,6 +2,7 @@
 
 namespace Alive2212\LaravelMobilePassport;
 
+use Alive2212\LaravelMobilePassport\Models\AliveMobilePassportRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;

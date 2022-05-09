@@ -2,7 +2,7 @@
 
 namespace Alive2212\LaravelMobilePassport\Http\Controllers;
 
-use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
+use Alive2212\LaravelMobilePassport\Models\AliveMobilePassportRole;
 use Alive2212\LaravelSmartRestful\BaseController;
 
 class MobilePassportRoleController extends BaseController

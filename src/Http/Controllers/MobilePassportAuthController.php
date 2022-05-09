@@ -2,8 +2,8 @@
 
 namespace Alive2212\LaravelMobilePassport\Http\Controllers;
 
-use Alive2212\LaravelMobilePassport\AliveMobilePassportDevice;
-use Alive2212\LaravelMobilePassport\AliveMobilePassportRole;
+use Alive2212\LaravelMobilePassport\Models\AliveMobilePassportDevice;
+use Alive2212\LaravelMobilePassport\Models\AliveMobilePassportRole;
 use Alive2212\LaravelMobilePassport\Http\Requests\CreateThirdPartyUserToken;
 use Alive2212\LaravelMobilePassport\LaravelMobilePassportSingleton;
 use Alive2212\LaravelSmartResponse\ResponseModel;
