@@ -12,13 +12,13 @@
     "homepage": "https://github.com/alive2212/laravelmobilepassport",
     "keywords": ["Laravel", "LaravelMobilePassport"],
     "require": {
-        "peterpetrus/passport-token": "~0.0",
-        "illuminate/support": "~8",
+        "peterpetrus/passport-token": ">=0.0",
+        "illuminate/support": ">=8",
         "alive2212/laravel-smart-restful": "~4",
         "laravel/passport": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "~8",
+        "phpunit/phpunit": ">=8",
         "orchestra/testbench": "*"
     },
     "autoload": {
